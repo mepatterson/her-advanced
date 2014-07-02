@@ -9,7 +9,7 @@ module HerAdvanced
             :class_name     => name.to_s.classify,
             :name           => name,
             :data_key       => name,
-            :default        => Her::Collection.new,
+            :default        => HerAdvanced::Collection.new,
             :path           => "/#{name}",
             :inverse_of => nil
           }.merge(opts)

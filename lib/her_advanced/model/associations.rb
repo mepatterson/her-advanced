@@ -107,7 +107,7 @@ module HerAdvanced
         #   @user.organization # => #<Organization(organizations/2) id=2 name="Foobar Inc.">
         #   # Fetched via GET "/users/1/organization"
         def has_one(name, opts={})
-          Her::Model::Associations::HasOneAssociation.attach(self, name, opts)
+          HerAdvanced::Model::Associations::HasOneAssociation.attach(self, name, opts)
         end
 
         # Define a *belongs_to* association.
