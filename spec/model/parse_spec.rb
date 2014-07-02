@@ -1,15 +1,15 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::Parse do
+describe HerAdvanced::Model::Parse do
   context "when include_root_in_json is set" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
 
-      Her::API.default_api.connection.adapter :test do |stub|
+      HerAdvanced::API.default_api.connection.adapter :test do |stub|
         stub.post("/users") { |env| [200, {}, { :user => { :id => 1, :fullname => params(env)[:user][:fullname] } }.to_json] }
         stub.post("/users/admins") { |env| [200, {}, { :user => { :id => 1, :fullname => params(env)[:user][:fullname] } }.to_json] }
       end
@@ -66,15 +66,15 @@ describe Her::Model::Parse do
 
   context "when parse_root_in_json is set" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
     end
 
     context "to true" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        HerAdvanced::API.default_api.connection.adapter :test do |stub|
           stub.post("/users") { |env| [200, {}, { :user => { :id => 1, :fullname => "Lindsay Fünke" } }.to_json] }
           stub.get("/users") { |env| [200, {}, [{ :user => { :id => 1, :fullname => "Lindsay Fünke" } }].to_json] }
           stub.get("/users/admins") { |env| [200, {}, [{ :user => { :id => 1, :fullname => "Lindsay Fünke" } }].to_json] }
@@ -118,7 +118,7 @@ describe Her::Model::Parse do
 
     context "to a symbol" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        HerAdvanced::API.default_api.connection.adapter :test do |stub|
           stub.post("/users") { |env| [200, {}, { :person => { :id => 1, :fullname => "Lindsay Fünke" } }.to_json] }
         end
 
@@ -133,7 +133,7 @@ describe Her::Model::Parse do
 
     context "in the parent class" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        HerAdvanced::API.default_api.connection.adapter :test do |stub|
           stub.post("/users") { |env| [200, {}, { :user => { :id => 1, :fullname => "Lindsay Fünke" } }.to_json] }
           stub.get("/users") { |env| [200, {}, { :users => [ { :id => 1, :fullname => "Lindsay Fünke" } ] }.to_json] }
         end
@@ -159,7 +159,7 @@ describe Her::Model::Parse do
 
     context "to true with :format => :active_model_serializers" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        HerAdvanced::API.default_api.connection.adapter :test do |stub|
           stub.post("/users") { |env| [200, {}, { :user => { :id => 1, :fullname => "Lindsay Fünke" } }.to_json] }
           stub.get("/users") { |env| [200, {}, { :users => [ { :id => 1, :fullname => "Lindsay Fünke" } ] }.to_json] }
           stub.get("/users/admins") { |env| [200, {}, { :users => [ { :id => 1, :fullname => "Lindsay Fünke" } ] }.to_json] }
@@ -204,8 +204,8 @@ describe Her::Model::Parse do
 
   context "when to_params is set" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.post("/users") { |env| ok! :id => 1, :fullname => params(env)['fullname'] }
@@ -233,8 +233,8 @@ describe Her::Model::Parse do
 
   context "when parse_root_in_json set json_api to true" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users") { |env| [200, {},  { :users => [{ :id => 1, :fullname => "Lindsay Fünke" }] }.to_json] }
@@ -289,12 +289,12 @@ describe Her::Model::Parse do
 
   context "when include_root_in_json set json_api" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
 
-      Her::API.default_api.connection.adapter :test do |stub|
+      HerAdvanced::API.default_api.connection.adapter :test do |stub|
         stub.post("/users") { |env| [200, {}, { :users => [{ :id => 1, :fullname => params(env)[:users][:fullname] }] }.to_json] }
       end
     end
@@ -322,12 +322,12 @@ describe Her::Model::Parse do
 
   context 'when send_only_modified_attributes is set' do
     before do
-      Her::API.setup :url => "https://api.example.com", :send_only_modified_attributes => true do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com", :send_only_modified_attributes => true do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
 
-      Her::API.default_api.connection.adapter :test do |stub|
+      HerAdvanced::API.default_api.connection.adapter :test do |stub|
         stub.get("/users/1") { |env| [200, {}, { :id => 1, :first_name => "Gooby", :last_name => "Pls" }.to_json] }
       end
 

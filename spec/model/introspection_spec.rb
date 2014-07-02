@@ -1,11 +1,11 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::Introspection do
+describe HerAdvanced::Model::Introspection do
   context "introspecting a resource" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.post("/users")     { |env| [200, {}, { :id => 1, :name => "Tobias Funke" }.to_json] }

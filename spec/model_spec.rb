@@ -1,10 +1,10 @@
 # encoding: utf-8
 require 'spec_helper'
 
-describe Her::Model do
+describe HerAdvanced::Model do
   before do
-    Her::API.setup :url => "https://api.example.com" do |connection|
-      connection.use Her::Middleware::FirstLevelParseJSON
+    HerAdvanced::API.setup :url => "https://api.example.com" do |connection|
+      connection.use HerAdvanced::Middleware::FirstLevelParseJSON
       connection.adapter :test do |stub|
         stub.get("/users/1") { |env| [200, {}, { :id => 1, :name => "Tobias Fünke" }.to_json] }
         stub.get("/users/1/comments") { |env| [200, {}, [{ :id => 4, :body => "They're having a FIRESALE?" }].to_json] }

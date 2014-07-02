@@ -1,7 +1,7 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe "Her::Model and ActiveModel::Validations" do
+describe "HerAdvanced::Model and ActiveModel::Validations" do
   context "validating attributes" do
     before do
       spawn_model "Foo::User" do

@@ -1,10 +1,10 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe "Her::Model and ActiveModel::Callbacks" do
+describe "HerAdvanced::Model and ActiveModel::Callbacks" do
   before do
-    Her::API.setup :url => "https://api.example.com" do |builder|
-      builder.use Her::Middleware::FirstLevelParseJSON
+    HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+      builder.use HerAdvanced::Middleware::FirstLevelParseJSON
     end
 
     spawn_model "Foo::User"
@@ -13,7 +13,7 @@ describe "Her::Model and ActiveModel::Callbacks" do
   context :before_save do
     subject { Foo::User.create(:name => "Tobias Funke") }
     before do
-      Her::API.default_api.connection.adapter :test do |stub|
+      HerAdvanced::API.default_api.connection.adapter :test do |stub|
         stub.post("/users") { |env| [200, {}, { :id => 1, :name => env[:body][:name] }.to_json] }
         stub.put("/users/1") { |env| [200, {}, { :id => 1, :name => env[:body][:name] }.to_json] }
       end
@@ -61,7 +61,7 @@ describe "Her::Model and ActiveModel::Callbacks" do
   context :before_create do
     subject { Foo::User.create(:name => "Tobias Funke") }
     before do
-      Her::API.default_api.connection.adapter :test do |stub|
+      HerAdvanced::API.default_api.connection.adapter :test do |stub|
         stub.post("/users") { |env| [200, {}, { :id => 1, :name => env[:body][:name] }.to_json] }
       end
     end
@@ -91,7 +91,7 @@ describe "Her::Model and ActiveModel::Callbacks" do
   context :after_find do
     subject { Foo::User.find(1) }
     before do
-      Her::API.default_api.connection.adapter :test do |stub|
+      HerAdvanced::API.default_api.connection.adapter :test do |stub|
         stub.get("/users/1") { |env| [200, {}, { :id => 1, :name => "Tobias Funke" }.to_json] }
       end
     end

@@ -1,12 +1,12 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::ORM do
+describe HerAdvanced::Model::ORM do
   context "mapping data to Ruby objects" do
     before do
-      api = Her::API.new
+      api = HerAdvanced::API.new
       api.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { |env| [200, {}, { :id => 1, :name => "Tobias Fünke" }.to_json] }
@@ -66,9 +66,9 @@ describe Her::Model::ORM do
 
   context "mapping data, metadata and error data to Ruby objects" do
     before do
-      api = Her::API.new
+      api = HerAdvanced::API.new
       api.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::SecondLevelParseJSON
+        builder.use HerAdvanced::Middleware::SecondLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users") { |env| [200, {}, { :data => [{ :id => 1, :name => "Tobias Fünke" }, { :id => 2, :name => "Lindsay Fünke" }], :metadata => { :total_pages => 10, :next_page => 2 }, :errors => ["Oh", "My", "God"] }.to_json] }
@@ -104,9 +104,9 @@ describe Her::Model::ORM do
 
   context "mapping data, metadata and error data in string keys to Ruby objects" do
     before do
-      api = Her::API.new
+      api = HerAdvanced::API.new
       api.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::SecondLevelParseJSON
+        builder.use HerAdvanced::Middleware::SecondLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users") { |env| [200, {}, { 'data' => [{ :id => 1, :name => "Tobias Fünke" }, { :id => 2, :name => "Lindsay Fünke" }], 'metadata' => { :total_pages => 10, :next_page => 2 }, 'errors' => ["Oh", "My", "God"] }.to_json] }
@@ -142,9 +142,9 @@ describe Her::Model::ORM do
 
   context "defining custom getters and setters" do
     before do
-      api = Her::API.new
+      api = HerAdvanced::API.new
       api.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { |env| [200, {}, { :id => 1, :friends => ["Maeby", "GOB", "Anne"] }.to_json] }
@@ -187,9 +187,9 @@ describe Her::Model::ORM do
 
   context "finding resources" do
     before do
-      api = Her::API.new
+      api = HerAdvanced::API.new
       api.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { |env| [200, {}, { :id => 1, :age => 42 }.to_json] }
@@ -279,8 +279,8 @@ describe Her::Model::ORM do
 
     context "when request_new_object_on_build is set" do
       before do
-        Her::API.setup :url => "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+          builder.use HerAdvanced::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/new") { |env| ok! :id => nil, :fullname => params(env)[:fullname], :email => "tobias@bluthcompany.com" }
@@ -302,8 +302,8 @@ describe Her::Model::ORM do
 
   context "creating resources" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.post("/users") { |env| [200, {}, { :id => 1, :fullname => Faraday::Utils.parse_query(env[:body])['fullname'], :email => Faraday::Utils.parse_query(env[:body])['email'] }.to_json] }
@@ -341,7 +341,7 @@ describe Her::Model::ORM do
 
     it "raises ResourceInvalid when #save! gets errors" do
       @company = Foo::Company.new
-      expect { @company.save! }.to raise_error Her::Errors::ResourceInvalid, "Remote validation failed: name is required"
+      expect { @company.save! }.to raise_error HerAdvanced::Errors::ResourceInvalid, "Remote validation failed: name is required"
     end
 
     it "don't overwrite data if response is empty" do
@@ -353,8 +353,8 @@ describe Her::Model::ORM do
 
   context "updating resources" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { |env| [200, {}, { :id => 1, :fullname => "Tobias Fünke" }.to_json] }
@@ -387,8 +387,8 @@ describe Her::Model::ORM do
 
   context "deleting resources" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { |env| [200, {}, { :id => 1, :fullname => "Tobias Fünke", :active => true }.to_json] }
@@ -415,15 +415,15 @@ describe Her::Model::ORM do
 
   context 'customizing HTTP methods' do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
     end
 
     context 'create' do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        HerAdvanced::API.default_api.connection.adapter :test do |stub|
           stub.put('/users') { |env| [200, {}, { :id => 1, :fullname => 'Tobias Fünke' }.to_json] }
         end
         spawn_model 'Foo::User' do
@@ -456,7 +456,7 @@ describe Her::Model::ORM do
 
     context 'update' do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        HerAdvanced::API.default_api.connection.adapter :test do |stub|
           stub.get('/users/1') { |env| [200, {}, { :id => 1, :fullname => 'Lindsay Fünke' }.to_json] }
           stub.post('/users/1') { |env| [200, {}, { :id => 1, :fullname => 'Tobias Fünke' }.to_json] }
         end

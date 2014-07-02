@@ -11,8 +11,8 @@ Dir[File.expand_path('../../spec/support/**/*.rb', __FILE__)].map(&method(:requi
 I18n.enforce_available_locales = false
 
 RSpec.configure do |config|
-  config.include Her::Testing::Macros::ModelMacros
-  config.include Her::Testing::Macros::RequestMacros
+  config.include HerAdvanced::Testing::Macros::ModelMacros
+  config.include HerAdvanced::Testing::Macros::RequestMacros
 
   config.before :each do
     @spawned_models = []

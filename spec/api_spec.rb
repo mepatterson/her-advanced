@@ -1,14 +1,14 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "spec_helper.rb")
 
-describe Her::API do
-  subject { Her::API.new }
+describe HerAdvanced::API do
+  subject { HerAdvanced::API.new }
 
   context "initialization" do
     describe ".setup" do
       it "creates a default connection" do
-        Her::API.setup :url => "https://api.example.com"
-        Her::API.default_api.base_uri.should == "https://api.example.com"
+        HerAdvanced::API.setup :url => "https://api.example.com"
+        HerAdvanced::API.default_api.base_uri.should == "https://api.example.com"
       end
     end
 
@@ -81,7 +81,7 @@ describe Her::API do
         let(:parsed_data) { subject.request(:_method => :get, :_path => "users/1")[:parsed_data] }
         before do
           subject.setup :url => "https://api.example.com" do |builder|
-            builder.use Her::Middleware::FirstLevelParseJSON
+            builder.use HerAdvanced::Middleware::FirstLevelParseJSON
             builder.adapter :test do |stub|
               stub.get("/users/1") { |env| [200, {}, MultiJson.dump({ :id => 1, :name => "George Michael Bluth", :errors => ["This is a single error"], :metadata => { :page => 1, :per_page => 10 } })] }
             end

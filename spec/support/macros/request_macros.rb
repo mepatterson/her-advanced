@@ -1,4 +1,4 @@
-module Her
+module HerAdvanced
   module Testing
     module Macros
       module RequestMacros

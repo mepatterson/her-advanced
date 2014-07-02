@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Her::Collection do
+describe HerAdvanced::Collection do
 
   let(:items) { [1, 2, 3, 4] }
   let(:metadata) { { :name => 'Testname' } }
@@ -8,7 +8,7 @@ describe Her::Collection do
 
   describe "#new" do
     context "without parameters" do
-      subject { Her::Collection.new }
+      subject { HerAdvanced::Collection.new }
 
       it { should eq([]) }
       its(:metadata) { should eq({}) }
@@ -16,7 +16,7 @@ describe Her::Collection do
     end
 
     context "with parameters" do
-      subject { Her::Collection.new(items, metadata, errors) }
+      subject { HerAdvanced::Collection.new(items, metadata, errors) }
 
       it { should eq([1,2,3,4]) }
       its(:metadata) { should eq({ :name => 'Testname' }) }

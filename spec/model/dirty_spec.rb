@@ -1,11 +1,11 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe "Her::Model and ActiveModel::Dirty" do
+describe "HerAdvanced::Model and ActiveModel::Dirty" do
   context "checking dirty attributes" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { |env| [200, {}, { :id => 1, :fullname => "Lindsay Fünke" }.to_json] }

@@ -1,7 +1,7 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::Associations do
+describe HerAdvanced::Model::Associations do
   context "setting associations without details" do
     before { spawn_model "Foo::User" }
     subject { Foo::User.associations }
@@ -83,8 +83,8 @@ describe Her::Model::Associations do
 
   context "handling associations without details" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { |env| [200, {}, { :id => 1, :name => "Tobias Fünke", :comments => [{ :comment => { :id => 2, :body => "Tobias, you blow hard!", :user_id => 1 } }, { :comment => { :id => 3, :body => "I wouldn't mind kissing that man between the cheeks, so to speak", :user_id => 1 } }], :role => { :id => 1, :body => "Admin" }, :organization => { :id => 1, :name => "Bluth Company" }, :organization_id => 1 }.to_json] }
@@ -250,8 +250,8 @@ describe Her::Model::Associations do
 
   context "handling associations with details" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { |env| [200, {}, { :id => 1, :name => "Tobias Fünke", :organization => { :id => 1, :name => "Bluth Company Inc." }, :organization_id => 1 }.to_json] }
@@ -325,7 +325,7 @@ describe Her::Model::Associations do
     end
 
     it "can return the association object" do
-      subject.association.should be_kind_of Her::Model::Associations::Association
+      subject.association.should be_kind_of HerAdvanced::Model::Associations::Association
     end
 
     it "still can call fetch via the association" do
@@ -360,8 +360,8 @@ describe Her::Model::Associations do
 
     context "with #create" do
       before do
-        Her::API.setup :url => "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+          builder.use HerAdvanced::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/10") { |env| [200, {}, { :id => 10 }.to_json] }
@@ -369,8 +369,8 @@ describe Her::Model::Associations do
           end
         end
 
-        Foo::User.use_api Her::API.default_api
-        Foo::Comment.use_api Her::API.default_api
+        Foo::User.use_api HerAdvanced::API.default_api
+        Foo::Comment.use_api HerAdvanced::API.default_api
       end
 
       it "takes the parent primary key and saves the resource" do

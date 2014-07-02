@@ -1,14 +1,9 @@
 <p align="center">
-  <a href="https://github.com/remiprev/her">
-    <img src="http://i.imgur.com/43KEchq.png" alt="Her" />
-  </a>
+  <h1>Her-Advanced</h1>
   <br />
   Her is an ORM (Object Relational Mapper) that maps REST resources to Ruby objects.<br /> It is designed to build applications that are powered by a RESTful API instead of a database.
   <br /><br />
-  <a href="https://rubygems.org/gems/her"><img src="http://img.shields.io/gem/v/her.svg" /></a>
-  <a href="https://codeclimate.com/github/remiprev/her"><img src="http://img.shields.io/codeclimate/github/remiprev/her.svg" /></a>
-  <a href='https://gemnasium.com/remiprev/her'><img src="http://img.shields.io/gemnasium/remiprev/her.svg" /></a>
-  <a href="https://travis-ci.org/remiprev/her"><img src="http://img.shields.io/travis/remiprev/her/master.svg" /></a>
+  Her-Advanced is @mepatterson's overhaul/refactor/rework of @remiprev's original work to support different standards for API responses, add additional methods, Virtus support, and various other things that aren't entirely compatible with @remiprev's suggested intent for his gem. To be clear: @remiprev's work on Her is awesome, but I have some more complicated needs that vanilla Her can't handle properly. If you want to use my version of the gem, that's cool and all, but I highly suggest you try the original one (http://her-rb.org/) first to see if it meets your needs, before using my hacked-up version of it, which will likely continue to diverge from @remiprev's version.
 </p>
 
 ---
@@ -18,12 +13,14 @@
 In your Gemfile, add:
 
 ```ruby
-gem "her"
+gem "her-advanced"
 ```
 
 That’s it!
 
 ## Usage
+
+Since this is @mepatterson's hacked-up version, I once again encourage you to look at the original gem (http://her-rb.org/). While my version will continue to support the Her documentation as much as possible, it may diverge (and may diverge wildly).
 
 _For a complete reference of all the methods you can use, check out [the documentation](http://rdoc.info/github/remiprev/her)._
 
@@ -31,27 +28,27 @@ First, you have to define which API your models will be bound to. For example, w
 
 ```ruby
 # config/initializers/her.rb
-Her::API.setup url: "https://api.example.com" do |c|
+HerAdvanced::API.setup url: "https://api.example.com" do |c|
   # Request
   c.use Faraday::Request::UrlEncoded
 
   # Response
-  c.use Her::Middleware::DefaultParseJSON
+  c.use HerAdvanced::Middleware::DefaultParseJSON
 
   # Adapter
   c.use Faraday::Adapter::NetHttp
 end
 ```
 
-And then to add the ORM behavior to a class, you just have to include `Her::Model` in it:
+And then to add the ORM behavior to a class, you just have to include `HerAdvanced::Model` in it:
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 end
 ```
 
-After that, using Her is very similar to many ActiveRecord-like ORMs:
+After that, using HerAdvanced is very similar to many ActiveRecord-like ORMs:
 
 ```ruby
 User.all
@@ -80,7 +77,7 @@ These are the basic ActiveRecord-like methods you can use with your models:
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 end
 
 # Update a fetched resource
@@ -114,19 +111,19 @@ User.create(fullname: "Maeby Fünke")
 
 # Save a new resource
 user = User.new(fullname: "Maeby Fünke")
-user.save! # raises Her::Errors::ResourceInvalid if it fails
+user.save! # raises HerAdvanced::Errors::ResourceInvalid if it fails
 # POST "/users" with `fullname=Maeby+Fünke`
 ```
 
-You can look into the [`her-example`](https://github.com/remiprev/her-example) repository for a sample application using Her.
+You can look into the [`her-example`](https://github.com/remiprev/her-example) repository for a sample application using HerAdvanced.
 
 ## Middleware
 
-Since Her relies on [Faraday](https://github.com/lostisland/faraday) to send HTTP requests, you can choose the middleware used to handle requests and responses. Using the block in the `setup` call, you have access to Faraday’s `connection` object and are able to customize the middleware stack used on each request and response.
+Since HerAdvanced relies on [Faraday](https://github.com/lostisland/faraday) to send HTTP requests, you can choose the middleware used to handle requests and responses. Using the block in the `setup` call, you have access to Faraday’s `connection` object and are able to customize the middleware stack used on each request and response.
 
 ### Authentication
 
-Her doesn’t support authentication by default. However, it’s easy to implement one with request middleware. Using the `setup` block, we can add it to the middleware stack.
+HerAdvanced doesn’t support authentication by default. However, it’s easy to implement one with request middleware. Using the `setup` block, we can add it to the middleware stack.
 
 For example, to add a token header to your API requests in a Rails application, you could use the excellent [`request_store`](https://rubygems.org/gems/request_store) gem like this:
 
@@ -152,29 +149,29 @@ end
 # config/initializers/her.rb
 require "lib/my_token_authentication"
 
-Her::API.setup url: "https://api.example.com" do |c|
+HerAdvanced::API.setup url: "https://api.example.com" do |c|
   # Request
   c.use MyTokenAuthentication
   c.use Faraday::Request::UrlEncoded
 
   # Response
-  c.use Her::Middleware::DefaultParseJSON
+  c.use HerAdvanced::Middleware::DefaultParseJSON
 
   # Adapter
   c.use Faraday::Adapter::NetHttp
 end
 ```
 
-Now, each HTTP request made by Her will have the `X-API-Token` header.
+Now, each HTTP request made by HerAdvanced will have the `X-API-Token` header.
 
 ### OAuth
 
-Using the `faraday_middleware` and `simple_oauth` gems, it’s fairly easy to use OAuth authentication with Her.
+Using the `faraday_middleware` and `simple_oauth` gems, it’s fairly easy to use OAuth authentication with HerAdvanced.
 
 In your Gemfile:
 
 ```ruby
-gem "her"
+gem "her-advanced"
 gem "faraday_middleware"
 gem "simple_oauth"
 ```
@@ -190,19 +187,19 @@ TWITTER_CREDENTIALS = {
   token_secret: ""
 }
 
-Her::API.setup url: "https://api.twitter.com/1/" do |c|
+HerAdvanced::API.setup url: "https://api.twitter.com/1/" do |c|
   # Request
   c.use FaradayMiddleware::OAuth, TWITTER_CREDENTIALS
 
   # Response
-  c.use Her::Middleware::DefaultParseJSON
+  c.use HerAdvanced::Middleware::DefaultParseJSON
 
   # Adapter
   c.use Faraday::Adapter::NetHttp
 end
 
 class Tweet
-  include Her::Model
+  include HerAdvanced::Model
 end
 
 @tweets = Tweet.get("/statuses/home_timeline.json")
@@ -212,7 +209,7 @@ See the *Authentication* middleware section for an example of how to pass differ
 
 ### Parsing JSON data
 
-By default, Her handles JSON data. It expects the resource/collection data to be returned at the first level.
+By default, HerAdvanced handles JSON data. It expects the resource/collection data to be returned at the first level.
 
 ```javascript
 // The response of GET /users/1
@@ -222,7 +219,7 @@ By default, Her handles JSON data. It expects the resource/collection data to be
 [{ "id" : 1, "name" : "Tobias Fünke" }]
 ```
 
-However, if you want Her to be able to parse the data from a single root element (usually based on the model name), you’ll have to use the `parse_root_in_json` method (See the **JSON attributes-wrapping** section).
+However, if you want HerAdvanced to be able to parse the data from a single root element (usually based on the model name), you’ll have to use the `parse_root_in_json` method (See the **JSON attributes-wrapping** section).
 
 Also, you can define your own parsing method using a response middleware. The middleware should set `env[:body]` to a hash with three symbol keys: `:data`, `:errors` and `:metadata`. The following code uses a custom middleware to parse the JSON data:
 
@@ -245,7 +242,7 @@ class MyCustomParser < Faraday::Response::Middleware
   end
 end
 
-Her::API.setup url: "https://api.example.com" do |c|
+HerAdvanced::API.setup url: "https://api.example.com" do |c|
   # Response
   c.use MyCustomParser
 
@@ -269,19 +266,19 @@ gem "memcached"
 In your Ruby code:
 
 ```ruby
-Her::API.setup url: "https://api.example.com" do |c|
+HerAdvanced::API.setup url: "https://api.example.com" do |c|
   # Request
   c.use FaradayMiddleware::Caching, Memcached::Rails.new('127.0.0.1:11211')
 
   # Response
-  c.use Her::Middleware::DefaultParseJSON
+  c.use HerAdvanced::Middleware::DefaultParseJSON
 
   # Adapter
   c.use Faraday::Adapter::NetHttp
 end
 
 class User
-  include Her::Model
+  include HerAdvanced::Model
 end
 
 @user = User.find(1)
@@ -293,7 +290,7 @@ end
 
 ## Advanced Features
 
-Here’s a list of several useful features available in Her.
+Here’s a list of several useful features available in HerAdvanced.
 
 ### Associations
 
@@ -301,22 +298,22 @@ Examples use this code:
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   has_many :comments
   has_one :role
   belongs_to :organization
 end
 
 class Comment
-  include Her::Model
+  include HerAdvanced::Model
 end
 
 class Role
-  include Her::Model
+  include HerAdvanced::Model
 end
 
 class Organization
-  include Her::Model
+  include HerAdvanced::Model
 end
 ```
 
@@ -324,7 +321,7 @@ end
 
 You can define `has_many`, `has_one` and `belongs_to` associations in your models. The association data is handled in two different ways.
 
-1. If Her finds association data when parsing a resource, that data will be used to create the associated model objects on the resource.
+1. If HerAdvanced finds association data when parsing a resource, that data will be used to create the associated model objects on the resource.
 2. If no association data was included when parsing a resource, calling a method with the same name as the association will fetch the data (providing there’s an HTTP request available for it in the API).
 
 For example, if there’s association data in the resource, no extra HTTP request is made when calling the `#comments` method and an array of resources is returned:
@@ -353,7 +350,7 @@ For example, if there’s association data in the resource, no extra HTTP reques
 # => #<Organization id=2 name="Bluth Company">
 ```
 
-If there’s no association data in the resource, Her makes a HTTP request to retrieve the data.
+If there’s no association data in the resource, HerAdvanced makes a HTTP request to retrieve the data.
 
 ```ruby
 @user = User.find(1)
@@ -400,7 +397,7 @@ You can also explicitly request a new object via the API when using ``build``. T
 
 ```ruby
 class Comment
-  include Her::Model
+  include HerAdvanced::Model
   request_new_object_on_build true
 end
 
@@ -416,31 +413,31 @@ Resources must always have all the required attributes to build their complete p
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   collection_path "organizations/:organization_id/users"
 end
 
 class Organization
-  include Her::Model
+  include HerAdvanced::Model
   has_many :users
 end
 ```
 
-Her expects all `User` resources to have an `:organization_id` (or `:_organization_id`) attribute. Otherwise, calling mostly all methods, like `User.all`, will thrown an exception like this one:
+HerAdvanced expects all `User` resources to have an `:organization_id` (or `:_organization_id`) attribute. Otherwise, calling mostly all methods, like `User.all`, will thrown an exception like this one:
 
 ```ruby
-Her::Errors::PathError: Missing :_organization_id parameter to build the request path. Path is `organizations/:organization_id/users`. Parameters are `{ … }`.
+HerAdvanced::Errors::PathError: Missing :_organization_id parameter to build the request path. Path is `organizations/:organization_id/users`. Parameters are `{ … }`.
 ```
 
 ### Validations
 
-Her includes `ActiveModel::Validations` so you can declare validations the same way you do in Rails.
+HerAdvanced includes `ActiveModel::Validations` so you can declare validations the same way you do in Rails.
 
 However, validations must be triggered manually — they are not run, for example, when calling `#save` on an object, or `#create` on a model class.
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 
   attributes :fullname, :email
   validates :fullname, presence: true
@@ -456,11 +453,11 @@ end
 
 ### Dirty attributes
 
-Her includes `ActiveModel::Dirty` so you can keep track of the attributes that have changed in an object.
+HerAdvanced includes `ActiveModel::Dirty` so you can keep track of the attributes that have changed in an object.
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 
   attributes :fullname, :email
 end
@@ -482,7 +479,7 @@ You can add *before* and *after* callbacks to your models that are triggered on 
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   before_save :set_internal_id
   after_find { |u| u.fullname.upcase! }
 
@@ -513,7 +510,7 @@ The available callbacks are:
 
 ### JSON attributes-wrapping
 
-Her supports *sending* and *parsing* JSON data wrapped in a root element (to be compatible with Rails’ `include_root_in_json` setting), like so:
+HerAdvanced supports *sending* and *parsing* JSON data wrapped in a root element (to be compatible with Rails’ `include_root_in_json` setting), like so:
 
 #### Sending
 
@@ -521,12 +518,12 @@ If you want to send all data to your API wrapped in a *root* element based on th
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   include_root_in_json true
 end
 
 class Article
-  include Her::Model
+  include HerAdvanced::Model
   include_root_in_json :post
 end
 
@@ -543,12 +540,12 @@ If the API returns data wrapped in a *root* element based on the model name.
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   parse_root_in_json true
 end
 
 class Article
-  include Her::Model
+  include HerAdvanced::Model
   parse_root_in_json :post
 end
 
@@ -567,11 +564,11 @@ Of course, you can use both `include_root_in_json` and `parse_root_in_json` at t
 
 If the API returns data in the default format used by the
 [ActiveModel::Serializers](https://github.com/rails-api/active_model_serializers)
-project you need to configure Her as follows:
+project you need to configure HerAdvanced as follows:
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   parse_root_in_json true, format: :active_model_serializers
 end
 
@@ -585,11 +582,11 @@ users = Users.all
 #### JSON API support
 
 If the API returns data in the [JSON API format](http://jsonapi.org/) you need
-to configure Her as follows:
+to configure HerAdvanced as follows:
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   parse_root_in_json true, format: :json_api
 end
 
@@ -606,7 +603,7 @@ You can easily define custom requests for your models using `custom_get`, `custo
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 
   custom_get :popular, :unpopular
   custom_post :from_default
@@ -629,7 +626,7 @@ You can also use `get`, `post`, `put` or `delete` (which maps the returned data 
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 end
 
 User.get(:popular)
@@ -645,7 +642,7 @@ You can also use `get_raw` which yields the parsed data and the raw response fro
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 
   def self.total
     get_raw(:stats) do |parsed_data, response|
@@ -663,7 +660,7 @@ You can also use full request paths (with strings instead of symbols).
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 end
 
 User.get("/users/popular")
@@ -677,7 +674,7 @@ You can define custom HTTP paths for your models:
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   collection_path "/hello_users/:id"
 end
 
@@ -689,7 +686,7 @@ You can also include custom variables in your paths:
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   collection_path "/organizations/:organization_id/users"
 end
 
@@ -710,7 +707,7 @@ If your record uses an attribute other than `:id` to identify itself, specify it
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   primary_key :_id
 end
 
@@ -723,7 +720,7 @@ user.destroy
 
 ### Inheritance
 
-If all your models share the same settings, you might want to make them children of a class and only include `Her::Model` in that class. However, there are a few settings that don’t get passed to the children classes:
+If all your models share the same settings, you might want to make them children of a class and only include `HerAdvanced::Model` in that class. However, there are a few settings that don’t get passed to the children classes:
 
 * `root_element`
 * `collection_path` and `resource_path`
@@ -733,7 +730,7 @@ Those settings are based on the class name, so you don’t have to redefine them
 ```ruby
 module MyAPI
   class Model
-    include Her::Model
+    include HerAdvanced::Model
 
     parse_root_in_json true
     include_root_in_json true
@@ -753,7 +750,7 @@ Just like with ActiveRecord, you can define named scopes for your models. Scopes
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 
   scope :by_role, -> { |role| where(role: role) }
   scope :admins, -> { by_role('admin') }
@@ -774,7 +771,7 @@ A neat trick you can do with scopes is interact with complex paths.
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
 
   collection_path "organizations/:organization_id/users"
   scope :for_organization, -> { |id| where(organization_id: id) }
@@ -789,23 +786,23 @@ end
 
 ### Multiple APIs
 
-It is possible to use different APIs for different models. Instead of calling `Her::API.setup`, you can create instances of `Her::API`:
+It is possible to use different APIs for different models. Instead of calling `HerAdvanced::API.setup`, you can create instances of `HerAdvanced::API`:
 
 ```ruby
 # config/initializers/her.rb
-MY_API = Her::API.new
+MY_API = HerAdvanced::API.new
 MY_API.setup url: "https://my-api.example.com" do |c|
   # Response
-  c.use Her::Middleware::DefaultParseJSON
+  c.use HerAdvanced::Middleware::DefaultParseJSON
 
   # Adapter
   c.use Faraday::Adapter::NetHttp
 end
 
-OTHER_API = Her::API.new
+OTHER_API = HerAdvanced::API.new
 OTHER_API.setup url: "https://other-api.example.com" do |c|
   # Response
-  c.use Her::Middleware::DefaultParseJSON
+  c.use HerAdvanced::Middleware::DefaultParseJSON
 
   # Adapter
   c.use Faraday::Adapter::NetHttp
@@ -816,12 +813,12 @@ You can then define which API a model will use:
 
 ```ruby
 class User
-  include Her::Model
+  include HerAdvanced::Model
   use_api MY_API
 end
 
 class Category
-  include Her::Model
+  include HerAdvanced::Model
   use_api OTHER_API
 end
 
@@ -834,13 +831,13 @@ Category.all
 
 ### SSL
 
-When initializing `Her::API`, you can pass any parameter supported by `Faraday.new`. So [to use HTTPS](https://github.com/lostisland/faraday/wiki/Setting-up-SSL-certificates), you can use Faraday’s `:ssl` option.
+When initializing `HerAdvanced::API`, you can pass any parameter supported by `Faraday.new`. So [to use HTTPS](https://github.com/lostisland/faraday/wiki/Setting-up-SSL-certificates), you can use Faraday’s `:ssl` option.
 
 ```ruby
 ssl_options = { ca_path: "/usr/lib/ssl/certs" }
-Her::API.setup url: "https://api.example.com", ssl: ssl_options do |c|
+HerAdvanced::API.setup url: "https://api.example.com", ssl: ssl_options do |c|
   # Response
-  c.use Her::Middleware::DefaultParseJSON
+  c.use HerAdvanced::Middleware::DefaultParseJSON
 
   # Adapter
   c.use Faraday::Adapter::NetHttp
@@ -854,13 +851,13 @@ Suppose we have these two models bound to your API:
 ```ruby
 # app/models/user.rb
 class User
-  include Her::Model
+  include HerAdvanced::Model
   custom_get :popular
 end
 
 # app/models/post.rb
 class Post
-  include Her::Model
+  include HerAdvanced::Model
   custom_get :recent, :archived
 end
 ```
@@ -872,12 +869,12 @@ In order to test them, we’ll have to stub the remote API requests. With [RSpec
 RSpec.configure do |config|
   config.include(Module.new do
     def stub_api_for(klass)
-      klass.use_api (api = Her::API.new)
+      klass.use_api (api = HerAdvanced::API.new)
 
       # Here, you would customize this for your own API (URL, middleware, etc)
       # like you have done in your application’s initializer
       api.setup url: "http://api.example.com" do |c|
-        c.use Her::Middleware::FirstLevelParseJSON
+        c.use HerAdvanced::Middleware::FirstLevelParseJSON
         c.adapter(:test) { |s| yield(s) }
       end
     end
@@ -935,33 +932,10 @@ describe Post do
 end
 ```
 
-## Upgrade
-
-See the [UPGRADE.md](https://github.com/remiprev/her/blob/master/UPGRADE.md) for backward compability issues.
-
-## Her IRL
-
-Most projects I know that use Her are internal or private projects but here’s a list of public ones:
-
-* [tumbz](https://github.com/remiprev/tumbz)
-* [crowdher](https://github.com/simonprev/crowdher)
-* [vodka](https://github.com/magnolia-fan/vodka)
-* [webistrano_cli](https://github.com/chytreg/webistrano_cli)
-* [ASMALLWORLD](https://www.asmallworld.com)
-
-## History
-
-I told myself a few months ago that it would be great to build a gem to replace Rails’ [ActiveResource](http://api.rubyonrails.org/classes/ActiveResource/Base.html) since it was barely maintained (and now removed from Rails 4.0), lacking features and hard to extend/customize. I had built a few of these REST-powered ORMs for client projects before but I decided I wanted to write one for myself that I could release as an open-source project.
-
-Most of Her’s core concepts were written on a Saturday morning of April 2012 ([first commit](https://github.com/remiprev/her/commit/689d8e88916dc2ad258e69a2a91a283f061cbef2) at 7am!).
-
-## Contribute
-
-Yes please! Feel free to contribute and submit issues/pull requests [on GitHub](https://github.com/remiprev/her/issues). There’s no such thing as a bad pull request — even if it’s for a typo, a small improvement to the code or the documentation!
-
-See [CONTRIBUTING.md](https://github.com/remiprev/her/blob/master/CONTRIBUTING.md) for best practices.
 
 ### Contributors
+
+[Rémi Prévost](https://github.com/remiprev) made the original Her! Go use his version, not mine! Mine is a hacked-up monstrosity rebuilt for my own use!
 
 These [fine folks](https://github.com/remiprev/her/contributors) helped with Her:
 
@@ -989,3 +963,5 @@ These [fine folks](https://github.com/remiprev/her/contributors) helped with Her
 ## License
 
 Her is © 2012-2013 [Rémi Prévost](http://exomel.com) and may be freely distributed under the [MIT license](https://github.com/remiprev/her/blob/master/LICENSE). See the `LICENSE` file.
+
+Similarly, Her-Advanced was hacked-up by [M. E. Patterson](https://github.com/mepatterson) and continues to be freely distributed under the [MIT license](https://github.com/mepatterson/her-advanced/blob/master/LICENSE). See the `LICENSE` file.

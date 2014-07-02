@@ -1,12 +1,12 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::Relation do
+describe HerAdvanced::Model::Relation do
   describe :where do
     context "for base classes" do
       before do
-        Her::API.setup :url => "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+          builder.use HerAdvanced::Middleware::FirstLevelParseJSON
           builder.adapter :test do |stub|
             stub.get("/users?foo=1&bar=2") { |env| ok! [{ :id => 2, :fullname => "Tobias Fünke" }] }
             stub.get("/users?admin=1") { |env| ok! [{ :id => 1, :fullname => "Tobias Fünke" }] }
@@ -55,8 +55,8 @@ describe Her::Model::Relation do
 
     context "for parent class" do
       before do
-        Her::API.setup :url => "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+          builder.use HerAdvanced::Middleware::FirstLevelParseJSON
           builder.adapter :test do |stub|
             stub.get("/users?page=2") { |env| ok! [{ :id => 1, :fullname => "Tobias Fünke" }, { :id => 2, :fullname => "Lindsay Fünke" }] }
           end
@@ -79,8 +79,8 @@ describe Her::Model::Relation do
 
   describe :create do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.post("/users") { |env| ok! :id => 1, :fullname => params(env)[:fullname], :email => params(env)[:email] }
@@ -121,8 +121,8 @@ describe Her::Model::Relation do
 
   describe :scope do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.adapter :test do |stub|
           stub.get("/users?what=4&where=3") { |env| ok! [{ :id => 3, :fullname => "Maeby Fünke" }] }
           stub.get("/users?what=2") { |env| ok! [{ :id => 2, :fullname => "Lindsay Fünke" }] }
@@ -170,8 +170,8 @@ describe Her::Model::Relation do
 
     context "for fetched resources" do
       before do
-        Her::API.setup :url => "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+          builder.use HerAdvanced::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.post("/users") { |env| ok! :id => 3, :active => (params(env)[:active] == "true" ? true : false) }
@@ -188,8 +188,8 @@ describe Her::Model::Relation do
 
     context "for fetched collections" do
       before do
-        Her::API.setup :url => "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+          builder.use HerAdvanced::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users?active=true") { |env| ok! [{ :id => 3, :active => (params(env)[:active] == "true" ? true : false) }] }
@@ -207,8 +207,8 @@ describe Her::Model::Relation do
 
   describe :map do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.adapter :test do |stub|
           stub.get("/users") do |env|
             ok! [{ :id => 1, :fullname => "Tobias Fünke" }, { :id => 2, :fullname => "Lindsay Fünke" }]

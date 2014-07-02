@@ -1,24 +1,24 @@
 # encoding: utf-8
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::HTTP do
+describe HerAdvanced::Model::HTTP do
   context "binding a model with an API" do
-    let(:api1) { Her::API.new :url => "https://api1.example.com" }
-    let(:api2) { Her::API.new :url => "https://api2.example.com" }
+    let(:api1) { HerAdvanced::API.new :url => "https://api1.example.com" }
+    let(:api2) { HerAdvanced::API.new :url => "https://api2.example.com" }
 
     before do
       spawn_model("Foo::User")
       spawn_model("Foo::Comment")
-      Her::API.setup :url => "https://api.example.com"
+      HerAdvanced::API.setup :url => "https://api.example.com"
     end
 
-    context "when binding a model to an instance of Her::API" do
+    context "when binding a model to an instance of HerAdvanced::API" do
       before { Foo::User.uses_api api1 }
       subject { Foo::User.her_api }
       its(:base_uri) { should == "https://api1.example.com" }
     end
 
-    context "when binding a model directly to Her::API" do
+    context "when binding a model directly to HerAdvanced::API" do
       before { spawn_model "Foo::User" }
       subject { Foo::User.her_api }
       its(:base_uri) { should == "https://api.example.com" }
@@ -26,13 +26,13 @@ describe Her::Model::HTTP do
 
     context "when using a proc for uses_api" do
       before do
-        Foo::User.uses_api lambda { Her::API.new :url => 'http://api-lambda.example.com' }
+        Foo::User.uses_api lambda { HerAdvanced::API.new :url => 'http://api-lambda.example.com' }
       end
 
       specify { Foo::User.her_api.base_uri.should == 'http://api-lambda.example.com' }
     end
 
-    context "when binding two models to two different instances of Her::API" do
+    context "when binding two models to two different instances of HerAdvanced::API" do
       before do
         Foo::User.uses_api api1
         Foo::Comment.uses_api api2
@@ -42,7 +42,7 @@ describe Her::Model::HTTP do
       specify { Foo::Comment.her_api.base_uri.should == "https://api2.example.com" }
     end
 
-    context "binding one model to Her::API and another one to an instance of Her::API" do
+    context "binding one model to HerAdvanced::API and another one to an instance of HerAdvanced::API" do
       before { Foo::Comment.uses_api api2 }
       specify { Foo::User.her_api.base_uri.should == "https://api.example.com" }
       specify { Foo::Comment.her_api.base_uri.should == "https://api2.example.com" }
@@ -72,8 +72,8 @@ describe Her::Model::HTTP do
 
   context "making HTTP requests" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |builder|
+        builder.use HerAdvanced::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users") { |env| [200, {}, [{ :id => 1 }].to_json] }
@@ -155,8 +155,8 @@ describe Her::Model::HTTP do
 
   context "setting custom HTTP requests" do
     before do
-      Her::API.setup :url => "https://api.example.com" do |connection|
-        connection.use Her::Middleware::FirstLevelParseJSON
+      HerAdvanced::API.setup :url => "https://api.example.com" do |connection|
+        connection.use HerAdvanced::Middleware::FirstLevelParseJSON
         connection.adapter :test do |stub|
           stub.get("/users/popular") { |env| [200, {}, [{ :id => 1 }, { :id => 2 }].to_json] }
           stub.post("/users/from_default") { |env| [200, {}, { :id => 4 }.to_json] }
